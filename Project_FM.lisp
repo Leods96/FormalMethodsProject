@@ -191,6 +191,13 @@
 
 			)))
 
+(defvar deniedMovement
+	(alw
+		(-A- h pos-d
+				(-A- r1 pos-d
+					(-A- r2 pos-d
+						(->(&& (robot= r1 'Y)(next(robot= r2 'Y))([!=] r1 r2))(&&(next(human= h 'Y))([!=] h r2))))))))
+
 
 (eezot:zot 20
 	(&&
