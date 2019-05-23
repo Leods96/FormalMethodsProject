@@ -191,19 +191,28 @@
 
 			)))
 
-(defvar deniedMovement
-	(alw
-		(-A- h pos-d
-				(-A- r1 pos-d
-					(-A- r2 pos-d
-						(->(&& (robot= r1 'Y)(next(robot= r2 'Y))([!=] r1 r2))(&&(next(human= h 'Y))([!=] h r2))))))))
+;(defvar deniedMovement
+;	(alw
+;		(-A- h pos-d
+;				(-A- r1 pos-d
+;					(-A- r2 pos-d
+;						(->(&& (robot= r1 'Y)(next(robot= r2 'Y))(||(< r1 r2)(> r1 r2)) )(&&(next(human= h 'Y))(||(< h r2)(> h r2)))))))))
+
+;(defvar noCollision
+;	(alw
+;		(-A- h pos-d
+;			(-A- r1 pos-d
+;				(-A- r2 pos-d
+;					(&&(next(human= h 'Y))(next(robot= r1 'Y))(robot= r2 'Y)(||(< r1 r2)(> r1 r2))(||(< h r1)(> h r1))))))))
 
 
-(eezot:zot 20
+(eezot:zot 2
 	(&&
 		onePlaceRobot
 		onePlaceHuman
 		neverInCellFour
 		movementHuman
+		;deniedMovement
+		;(!! noCollision)
 		)
 	)
