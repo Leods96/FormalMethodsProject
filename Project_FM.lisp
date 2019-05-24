@@ -17,6 +17,9 @@
 (defvar state-d '(N Y))		;Y is in the cell, N otherwise
 (defvar pos-d  '(1 2 3 4 5 6 7 8 9 10 11 12))
 
+(defvar target-d '(3 9))
+(define-item target target-d)
+
 (define-array human pos-d state-d)
 (define-array robot pos-d state-d)
 
@@ -198,14 +201,27 @@
 			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
 
 
+(defvar property
+	(alw
+		(-A- p pos-d
+			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N)  )
+				)))
 
-;(defvar noCollision
-;	(alw
-;		(-A- h pos-d
-;			(-A- r1 pos-d
-;				(-A- r2 pos-d
-;					(&&(next(human= h 'Y))(next(robot= r1 'Y))(robot= r2 'Y)(||(< r1 r2)(> r1 r2))(||(< h r1)(> h r1))))))))
+(defvar switchTarget
+	(alw
+		(&&
+			(-> (next(robot= 3 'Y)) (next (target= 9)))
+			(-> (next(robot= 9 'Y)) (next (target= 3)))
+			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(target= 3)) (next (target= 3)))
+			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(target= 9)) (next (target= 9))))))
 
+
+(defvar robotMustMove
+	(alw
+		(-A- p pos-d
+			(->(robot= p 'Y)(next(robot= p 'N)) ))
+		))
+						
 
 (eezot:zot 20
 	(&&
@@ -213,7 +229,10 @@
 		onePlaceHuman
 		neverInCellFour
 		movementHuman
+		movementRobot
 		deniedMovement
-		;(!! noCollision)
+		switchTarget
+		;robotMustMove
+		;(!! property)
 		)
 	)
