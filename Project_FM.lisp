@@ -191,26 +191,12 @@
 
 			)))
 
-;(defvar deniedMovement
-;	(alw
-;		(-A- h pos-d
-;				(-A- r1 pos-d
-;					(-A- r2 pos-d
-;						(->(&& (robot= r1 'Y)(next(robot= r2 'Y))(||(< r1 r2)(> r1 r2)) )(&&(next(human= h 'Y))(||(< h r2)(> h r2)))))))))
 
-;COMPILA!!!!! MA CON LA PROVA DA UNSAT(PECHÈ?)
 (defvar deniedMovement
 	(alw 
 		(-A- h pos-d
-			(-A- r1 pos-d
-				(-A- r2 pos-d
-					(->(&&(human= h 'Y)(robot= r2 'Y)(= h r2)) (&&(yesterday(robot= r1 'Y)) (= r1 r2) )))))))
+			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
 
-(defvar prova
-	(&&
-		(next(next(next (human= 6 'Y) )))
-		(next(next(next (robot= 6 'Y) )))
-		))
 
 
 ;(defvar noCollision
@@ -228,7 +214,6 @@
 		neverInCellFour
 		movementHuman
 		deniedMovement
-		prova
 		;(!! noCollision)
 		)
 	)
