@@ -16,14 +16,21 @@
 
 (defvar state-d '(N Y))		;Y is in the cell, N otherwise
 (defvar pos-d  '(1 2 3 4 5 6 7 8 9 10 11 12))
-
 (defvar target-d '(3 9))
-(define-item target target-d)
 
 (define-array human pos-d state-d)
 (define-array robot pos-d state-d)
+(define-item target target-d)
 
-;Verify that the human is in one and only one cell in the work's zone
+
+(defvar init
+	(&&
+		(human= 10 'Y)
+		(robot= 3 'Y)
+		(target= 9)))
+
+
+;Human is in one and only one workcell
 (defvar onePlaceHuman
 	(alw
 		(&& 
@@ -34,7 +41,7 @@
 						(> x y)(!!(&&(human= x 'Y)(human= y 'Y)))))))))
 
 
-;Verify that the robot is in one and only one cell in the work's zone
+;Robot is in one and only one workcell
 (defvar onePlaceRobot
 	(alw
 		(&& 
@@ -50,6 +57,7 @@
 		(&&
 			(human= 4 'N)
 			(robot= 4 'N))))
+
 
 (defvar movementHuman
 	(alw
@@ -201,12 +209,6 @@
 			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
 
 
-(defvar property
-	(alw
-		(-A- p pos-d
-			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N)  )
-				)))
-
 (defvar switchTarget
 	(alw
 		(&&
@@ -221,10 +223,18 @@
 		(-A- p pos-d
 			(->(robot= p 'Y)(next(robot= p 'N)) ))
 		))
+
+
+(defvar property
+	(alw
+		(-A- p pos-d
+			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N)  )
+				)))
 						
 
 (eezot:zot 20
 	(&&
+		(yesterday init)
 		onePlaceRobot
 		onePlaceHuman
 		neverInCellFour
@@ -232,7 +242,7 @@
 		movementRobot
 		deniedMovement
 		switchTarget
-		;robotMustMove
+		robotMustMove
 		;(!! property)
 		)
 	)
