@@ -218,11 +218,16 @@
 			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(target= 9)) (next (target= 9))))))
 
 
-(defvar robotMustMove
+(defvar robotNearToTheTarget
 	(alw
-		(-A- p pos-d
-			(->(robot= p 'Y)(next(robot= p 'N)) ))
-		))
+		(&&
+			(->(&&(next(human= 9 'Y))(target= 9)(robot= 5 'Y))(next(robot= 5 'Y)))
+			(->(&&(next(human= 9 'Y))(target= 9)(robot= 6 'Y))(next(robot= 6 'Y)))
+			(->(&&(next(human= 9 'Y))(target= 9)(robot= 10 'Y))(next(robot= 10 'Y)))
+			(->(&&(next(human= 3 'Y))(target= 3)(robot= 2 'Y))(next(robot= 2 'Y)))
+			(->(&&(next(human= 3 'Y))(target= 3)(robot= 6 'Y))(next(robot= 6 'Y)))
+			(->(&&(next(human= 3 'Y))(target= 3)(robot= 7 'Y))(next(robot= 7 'Y)))
+			(->(&&(next(human= 3 'Y))(target= 3)(robot= 8 'Y))(next(robot= 8 'Y))))))
 
 
 (defvar property
@@ -230,7 +235,23 @@
 		(-A- p pos-d
 			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N)  )
 				)))
-						
+
+
+
+; Helper property to verify the correctness of the system
+(defvar helperRobotMustMove
+	(alw
+		(-A- p pos-d
+			(->(robot= p 'Y)(next(robot= p 'N)) ))
+))
+
+; Helper property to verify the correctness of the system
+(defvar helperHumanDoesNotMove
+	(alw
+		(-A- p pos-d
+			(->(human= p 'Y)(next(human= p 'Y)) ))
+))
+
 
 (eezot:zot 20
 	(&&
@@ -242,7 +263,7 @@
 		movementRobot
 		deniedMovement
 		switchTarget
-		robotMustMove
+		robotNearToTheTarget
 		;(!! property)
 		)
 	)
