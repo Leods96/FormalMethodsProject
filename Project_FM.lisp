@@ -23,6 +23,9 @@
 (define-item target target-d)
 
 
+
+;----------------------------------------------------------------- Init -------------------------------------------------------------------
+
 ;The initial configuration is human in 10 and robot in 3
 (defvar init
 	(&&
@@ -30,6 +33,9 @@
 		(robot= 3 'Y)
 		(target= 9)))
 
+
+
+;------------------------------------------------------------ Transition system -----------------------------------------------------------
 
 ;Human is in one and only one workcell
 (defvar onePlaceHuman
@@ -95,7 +101,7 @@
 
 			(-> (human= 7 'Y)(!! (|| (next(human= 1 'Y)) ;Starting from 7
 									 (next(human= 5 'Y))
-									 (next(human= 5 'Y)))))		
+									 (next(human= 9 'Y)))))		
 
 			(-> (human= 8 'Y)(||(next(human= 3 'Y)) ;Starting from 8
 								(next(human= 7 'Y)) 
@@ -196,6 +202,27 @@
 								(next(robot= 12 'Y)))))))
 
 
+; No collision between robot and human
+(defvar noCollision
+	(alw
+		(->
+			(-A- h pos-d
+				(->(robot= h 'Y)(next(robot= h 'N))))
+
+			(&&	
+				(-> (next(human= 1 'Y))(next(robot= 1 'N)))
+				(-> (next(human= 2 'Y))(next(robot= 2 'N)))
+				(-> (next(human= 3 'Y))(next(robot= 3 'N)))
+				(-> (next(human= 5 'Y))(next(robot= 5 'N)))
+				(-> (next(human= 6 'Y))(next(robot= 6 'N)))
+				(-> (next(human= 7 'Y))(next(robot= 7 'N)))
+				(-> (next(human= 8 'Y))(next(robot= 8 'N)))
+				(-> (next(human= 9 'Y))(next(robot= 9 'N)))
+				(-> (next(human= 10 'Y))(next(robot= 10 'N)))
+				(-> (next(human= 11 'Y))(next(robot= 11 'N)))
+				(-> (next(human= 12 'Y))(next(robot= 12 'N)))))))
+
+
 ; Prohibited movements to the robot: the robot should avoid any obstacle
 ;(defvar deniedMovement
 ;	(alw 
@@ -236,16 +263,6 @@
 			(som(robot= 9 'Y)))))
 
 
-
-;Human and robot are never in the same place while the robot is moving
-(defvar property
-	(alw
-		(-A- p pos-d
-			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N)  )
-				)))
-
-
-
 ; Helper property to verify the correctness of the system
 (defvar helperRobotMustMove
 	(alw
@@ -262,20 +279,37 @@
 ))
 
 
-
-
-(eezot:zot 20
+; Transition system
+(defvar trans
 	(&&
-		(yesterday init)
 		onePlaceRobot
 		onePlaceHuman
 		neverInCellFour
 		movementHuman
 		movementRobot
-		;deniedMovement
+		noCollision
 		switchTarget
 		robotNearToTheTarget
 		eventuallyWorkPosition
-		;(!! property)
+		))
+
+
+;--------------------------------------------------------------- Property ------------------------------------------------------------------
+
+;Human and robot are never in the same place while the robot is moving
+(defvar property
+	(alw
+		(-A- p pos-d
+			(-> (&&(yesterday(robot= p 'N)) (robot= p 'Y)) (human= p 'N))
+				)))
+
+
+;------------------------------------------------------------------------------------------------------------------------------------
+
+(eezot:zot 20
+	(&&
+		(yesterday init)
+		(!! property)
+		trans
 		)
 	)
