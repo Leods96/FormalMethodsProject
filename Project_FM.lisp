@@ -163,7 +163,7 @@
 
 			(-> (robot= 7 'Y)(!! (|| (next(robot= 1 'Y)) ;Starting from 7
 									 (next(robot= 5 'Y))
-									 (next(robot= 5 'Y)))))		
+									 (next(robot= 9 'Y)))))		
 
 			(-> (robot= 8 'Y)(||(next(robot= 3 'Y)) ;Starting from 8
 								(next(robot= 7 'Y)) 
@@ -197,10 +197,10 @@
 
 
 ; Prohibited movements to the robot: the robot should avoid any obstacle
-(defvar deniedMovement
-	(alw 
-		(-A- h pos-d
-			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
+;(defvar deniedMovement
+;	(alw 
+;		(-A- h pos-d
+;			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
 
 
 ;When the robot goes to cell 3, the next target of the robot will be 9 and viceversa 
@@ -224,6 +224,17 @@
 			(->(&&(next(human= 3 'Y))(target= 3)(robot= 6 'Y))(next(robot= 6 'Y)))
 			(->(&&(next(human= 3 'Y))(target= 3)(robot= 7 'Y))(next(robot= 7 'Y)))
 			(->(&&(next(human= 3 'Y))(target= 3)(robot= 8 'Y))(next(robot= 8 'Y))))))
+
+
+;Robot and human go infinitely often in their work position
+(defvar eventuallyWorkPosition
+	(alw
+		(&&
+			(som(human= 8 'Y))
+			(som(human= 10 'Y))
+			(som(robot= 3 'Y))
+			(som(robot= 9 'Y)))))
+
 
 
 ;Human and robot are never in the same place while the robot is moving
@@ -261,9 +272,10 @@
 		neverInCellFour
 		movementHuman
 		movementRobot
-		deniedMovement
+		;deniedMovement
 		switchTarget
 		robotNearToTheTarget
+		eventuallyWorkPosition
 		;(!! property)
 		)
 	)
