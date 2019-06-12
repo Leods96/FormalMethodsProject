@@ -2,7 +2,6 @@
 ;											;
 ; Project FM								;
 ;											;
-;											;
 ; Matteo Frigerio 928058					;
 ; Leonardo Romano 920337             		;
 ;											;
@@ -16,11 +15,13 @@
 ; Variable
 (defvar state-d '(N Y))		;Y is in the cell, N otherwise
 (defvar pos-d  '(1 2 3 4 5 6 7 8 9 10 11 12))
-(defvar target-d '(3 9))
+(defvar targetHuman-d '(8 10))
+(defvar targetRobot-d '(3 9))
 
 (define-array human pos-d state-d)
 (define-array robot pos-d state-d)
-(define-item target target-d)
+(define-item targetHuman targetHuman-d)
+(define-item targetRobot targetRobot-d)
 
 
 
@@ -31,7 +32,8 @@
 	(&&
 		(human= 10 'Y)
 		(robot= 3 'Y)
-		(target= 9)))
+		(targetRobot= 9)
+		(targetHuman= 8)))
 
 
 
@@ -205,52 +207,189 @@
 ; No collision between robot and human
 (defvar noCollision
 	(alw
-		(->
-			(-A- h pos-d
-				(->(robot= h 'Y)(next(robot= h 'N))))
+		(&&
+			(-> (&&(next(human= 1 'Y))(||	(robot= 2 'Y)
+											(robot= 5 'Y)
+											(robot= 6 'Y))) (||		(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))))
 
-			(&&	
-				(-> (next(human= 1 'Y))(next(robot= 1 'N)))
-				(-> (next(human= 2 'Y))(next(robot= 2 'N)))
-				(-> (next(human= 3 'Y))(next(robot= 3 'N)))
-				(-> (next(human= 5 'Y))(next(robot= 5 'N)))
-				(-> (next(human= 6 'Y))(next(robot= 6 'N)))
-				(-> (next(human= 7 'Y))(next(robot= 7 'N)))
-				(-> (next(human= 8 'Y))(next(robot= 8 'N)))
-				(-> (next(human= 9 'Y))(next(robot= 9 'N)))
-				(-> (next(human= 10 'Y))(next(robot= 10 'N)))
-				(-> (next(human= 11 'Y))(next(robot= 11 'N)))
-				(-> (next(human= 12 'Y))(next(robot= 12 'N)))))))
+			(-> (&&(next(human= 2 'Y))(||	(robot= 1 'Y)
+											(robot= 3 'Y)
+											(robot= 5 'Y)
+											(robot= 6 'Y)
+											(robot= 7 'Y))) (||		(next(robot= 1 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 3 'Y))(||	(robot= 2 'Y)
+											(robot= 6 'Y)
+											(robot= 7 'Y)
+											(robot= 8 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 5 'Y))(||	(robot= 1 'Y)
+											(robot= 2 'Y)
+											(robot= 6 'Y)
+											(robot= 9 'Y)
+											(robot= 10 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))))
+
+			(-> (&&(next(human= 6 'Y))(||	(robot= 1 'Y)
+											(robot= 2 'Y)
+											(robot= 3 'Y)
+											(robot= 5 'Y)
+											(robot= 7 'Y)
+											(robot= 9 'Y)
+											(robot= 10 'Y)
+											(robot= 11 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 7 'Y))(||	(robot= 2 'Y)
+											(robot= 3 'Y)
+											(robot= 6 'Y)
+											(robot= 8 'Y)
+											(robot= 10 'Y)
+											(robot= 11 'Y)
+											(robot= 12 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 8 'Y))(||	(robot= 3 'Y)
+											(robot= 7 'Y)
+											(robot= 11 'Y)
+											(robot= 12 'Y))) (||	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 9 'Y))(||	(robot= 5 'Y)
+											(robot= 6 'Y)
+											(robot= 10 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y))))
+
+			(-> (&&(next(human= 10 'Y))(||	(robot= 5 'Y)
+											(robot= 6 'Y)
+											(robot= 7 'Y)
+											(robot= 9 'Y)
+											(robot= 11 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 11 'Y))
+																	(next(robot= 12 'Y))))
+
+			(-> (&&(next(human= 11 'Y))(||	(robot= 6 'Y)
+											(robot= 7 'Y)
+											(robot= 8 'Y)
+											(robot= 10 'Y)
+											(robot= 12 'Y))) (||	(next(robot= 1 'Y))
+																	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 5 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 9 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 12 'Y))))
 
 
-; Prohibited movements to the robot: the robot should avoid any obstacle
-;(defvar deniedMovement
-;	(alw 
-;		(-A- h pos-d
-;			(->(&&(next(human= h 'Y))(robot= h 'N))(next(robot= h 'N))))))
+			(-> (&&(next(human= 12 'Y))(||	(robot= 7 'Y)
+											(robot= 8 'Y)
+											(robot= 11 'Y))) (||	(next(robot= 2 'Y))
+																	(next(robot= 3 'Y))
+																	(next(robot= 6 'Y))
+																	(next(robot= 7 'Y))
+																	(next(robot= 8 'Y))
+																	(next(robot= 10 'Y))
+																	(next(robot= 11 'Y)))))))
 
 
-;When the robot goes to cell 3, the next target of the robot will be 9 and viceversa 
+;When the robot goes to cell 3, the next target of the robot will be 9 and viceversa
+;When the human goes to cell 8, the next target of the human will be 10 and viceversa
 (defvar switchTarget
 	(alw
 		(&&
-			(-> (next(robot= 3 'Y)) (next (target= 9)))
-			(-> (next(robot= 9 'Y)) (next (target= 3)))
-			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(target= 3)) (next (target= 3)))
-			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(target= 9)) (next (target= 9))))))
+			;Target robot
+			(-> (next(robot= 3 'Y)) (next (targetRobot= 9)))
+			(-> (next(robot= 9 'Y)) (next (targetRobot= 3)))
+			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(targetRobot= 3)) (next (targetRobot= 3)))
+			(-> (&&(next(robot= 3 'N))(next(robot= 9 'N))(targetRobot= 9)) (next (targetRobot= 9)))
+
+			;Target human
+			(-> (next(human= 8 'Y)) (next (targetHuman= 10)))
+			(-> (next(human= 10 'Y)) (next (targetHuman= 8)))
+			(-> (&&(next(human= 8 'N))(next(human= 10 'N))(targetHuman= 8)) (next (targetHuman= 8)))
+			(-> (&&(next(human= 8 'N))(next(human= 10 'N))(targetHuman= 10)) (next (targetHuman= 10))))))
+
 
 
 ;If the robot is only one area far from its target and the destination is busy, then the robot chooses to stop
 (defvar robotNearToTheTarget
 	(alw
 		(&&
-			(->(&&(next(human= 9 'Y))(target= 9)(robot= 5 'Y))(next(robot= 5 'Y)))
-			(->(&&(next(human= 9 'Y))(target= 9)(robot= 6 'Y))(next(robot= 6 'Y)))
-			(->(&&(next(human= 9 'Y))(target= 9)(robot= 10 'Y))(next(robot= 10 'Y)))
-			(->(&&(next(human= 3 'Y))(target= 3)(robot= 2 'Y))(next(robot= 2 'Y)))
-			(->(&&(next(human= 3 'Y))(target= 3)(robot= 6 'Y))(next(robot= 6 'Y)))
-			(->(&&(next(human= 3 'Y))(target= 3)(robot= 7 'Y))(next(robot= 7 'Y)))
-			(->(&&(next(human= 3 'Y))(target= 3)(robot= 8 'Y))(next(robot= 8 'Y))))))
+			(-> (&&(next(human= 9 'Y))(targetRobot= 9)(robot= 5 'Y)) (next(robot= 5 'Y)))
+			(-> (&&(next(human= 9 'Y))(targetRobot= 9)(robot= 6 'Y)) (next(robot= 6 'Y)))
+			(-> (&&(next(human= 9 'Y))(targetRobot= 9)(robot= 10 'Y)) (next(robot= 10 'Y)))
+			(-> (&&(next(human= 3 'Y))(targetRobot= 3)(robot= 2 'Y)) (next(robot= 2 'Y)))
+			(-> (&&(next(human= 3 'Y))(targetRobot= 3)(robot= 6 'Y)) (next(robot= 6 'Y)))
+			(-> (&&(next(human= 3 'Y))(targetRobot= 3)(robot= 7 'Y)) (next(robot= 7 'Y)))
+			(-> (&&(next(human= 3 'Y))(targetRobot= 3)(robot= 8 'Y)) (next(robot= 8 'Y))))))
 
 
 ;Robot and human go infinitely often in their work position
@@ -263,20 +402,17 @@
 			(som(robot= 9 'Y)))))
 
 
-; Helper property to verify the correctness of the system
-(defvar helperRobotMustMove
+; Robot and human do not move for two instants of time
+(defvar workTime
 	(alw
-		(-A- p pos-d
-			(->(robot= p 'Y)(next(robot= p 'N)) ))
-))
-
-
-; Helper property to verify the correctness of the system
-(defvar helperHumanDoesNotMove
-	(alw
-		(-A- p pos-d
-			(->(human= p 'Y)(next(human= p 'Y)) ))
-))
+		(&&
+			;Human
+			(-> (&&(next(human= 8 'Y))(targetHuman= 8)) (&&(next(next(human= 8 'Y)))(next(next(next(human= 8 'Y))))))
+			(-> (&&(next(human= 10 'Y))(targetHuman= 10)) (&&(next(next(human= 10 'Y)))(next(next(next(human= 10 'Y))))))
+			
+			;Robot
+			(-> (&&(next(robot= 3 'Y))(targetRobot= 3)) (&&(next(next(robot= 3 'Y)))(next(next(next(robot= 3 'Y))))))
+			(-> (&&(next(robot= 9 'Y))(targetRobot= 9)) (&&(next(next(robot= 9 'Y)))(next(next(next(robot= 9 'Y)))))))))
 
 
 ; Transition system
@@ -291,6 +427,7 @@
 		switchTarget
 		robotNearToTheTarget
 		eventuallyWorkPosition
+		workTime
 		))
 
 
